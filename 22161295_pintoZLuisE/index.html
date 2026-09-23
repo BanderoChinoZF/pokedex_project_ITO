@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscador de Pokémon</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 40px;
+    }
+    input, button {
+      padding: 8px;
+      font-size: 16px;
+    }
+    #resultado {
+      margin-top: 20px;
+    }
+    .tarjeta {
+      display: inline-block;
+      border: 2px solid #333;
+      border-radius: 10px;
+      padding: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Buscador de Pokémon</h1>
+
+  <!-- REQUISITO: recuadro que recibe el nombre o ID y botón Buscar -->
+  <input type="text" id="busqueda" placeholder="Nombre o ID">
+  <button id="btnBuscar">Buscar</button>
+
+  <div id="resultado"></div>
+
+  <script>
+    const input = document.getElementById("busqueda");
+    const boton = document.getElementById("btnBuscar");
+    const resultado = document.getElementById("resultado");
+
+    boton.addEventListener("click", buscarPokemon);
+
+    async function buscarPokemon() {
+      const valor = input.value.trim().toLowerCase();
+
+      if (valor === "") {
+        resultado.innerHTML = "<p>Escribe un nombre o un ID</p>";
+        return;
+      }
+
+      try {
+        // REQUISITO: consumir el endpoint GET /pokemon/{nombre_o_id} con fetch
+        const respuesta = await fetch("https://pokeapi.co/api/v2/pokemon/" + valor);
+
+        if (!respuesta.ok) {
+          resultado.innerHTML = "<p>Pokémon no encontrado</p>";
+          return;
+        }
+
+        const pokemon = await respuesta.json();
+
+        // REQUISITO: mostrar nombre, ID, peso e imagen (sprites.front_default)
+        // REQUISITO: insertar la información en el HTML (DOM)
+        resultado.innerHTML = `
+          <div class="tarjeta">
+            <h2>${pokemon.name}</h2>
+            <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
+            <p>ID: ${pokemon.id}</p>
+            <p>Peso: ${pokemon.weight / 10} kg</p>
+          </div>
+        `;
+      } catch (error) {
+        resultado.innerHTML = "<p>Error de conexión</p>";
+      }
+    }
+  </script>
+</body>
+</html>
