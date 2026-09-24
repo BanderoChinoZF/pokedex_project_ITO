@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscador de Pokemon</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #resultado {
+      margin-top: 20px;
+      border: 1px solid black;
+      padding: 10px;
+      width: 250px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Buscador de Pokemon</h1>
+
+  <input type="text" id="entrada" placeholder="pikachu o 25">
+  <button onclick="buscar()">Buscar</button>
+
+  <div id="resultado"></div>
+
+  <script>
+    async function buscar() {
+      const texto = document.getElementById("entrada").value.toLowerCase();
+
+      const respuesta = await fetch("https://pokeapi.co/api/v2/pokemon/" + texto);
+
+      if (!respuesta.ok) {
+        document.getElementById("resultado").innerHTML = "No se encontro ese Pokemon";
+        return;
+      }
+
+      const pokemon = await respuesta.json();
+
+      const nombre = pokemon.name;
+      const id = pokemon.id;
+      const peso = pokemon.weight;
+      const imagen = pokemon.sprites.front_default;
+
+      document.getElementById("resultado").innerHTML =
+        "<img src='" + imagen + "'>" +
+        "<p>Nombre: " + nombre + "</p>" +
+        "<p>ID: " + id + "</p>" +
+        "<p>Peso: " + peso + "</p>";
+    }
+  </script>
+
+</body>
+</html>
