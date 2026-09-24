@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POKEDEX</title>
+    
+    <style>
+        body {
+            background-image: url('img/pokebola.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: local;
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; 
+            margin: 0; 
+            font-family: Arial, sans-serif;
+        }
+
+        #pokedex {
+            background-color: #dc0a2d;
+            width: 350px; 
+            border-radius: 15px;
+            border: 3px solid #555;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            
+            display: flex;
+            flex-direction: column; 
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pokedex">
+        <h1>Buscador</h1>
+
+        <input type="text" id="pokemonInput" placeholder="Ingrese el nombre del Pokemon">
+        <button id="searchButton">Buscar</button>
+        
+        <div id="pokebola"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
