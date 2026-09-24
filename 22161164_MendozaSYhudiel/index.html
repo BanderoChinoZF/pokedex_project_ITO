@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pokeMsz</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #cc0000;
+      --blue: #1a3a6b;
+      --blue-light: #2256a8;
+      --white: #f0f0f0;
+      --black: #111111;
+      --gray: #1e1e1e;
+      --card-bg: #181818;
+    }
+
+    body {
+      background-color: var(--black);
+      color: var(--white);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 36px;
+    }
+
+    .pokeball-icon {
+      width: 52px;
+      height: 52px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+
+    h1 span.red  { color: var(--red); }
+    h1 span.blue { color: var(--blue-light); }
+
+    .byline {
+      font-size: 0.72rem;
+      color: #555;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      max-width: 460px;
+      margin-bottom: 36px;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--blue);
+      border-radius: 6px;
+      background: var(--gray);
+      color: var(--white);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box input:focus { border-color: var(--blue-light); }
+    .search-box input::placeholder { color: #444; }
+
+    .search-box button {
+      padding: 12px 22px;
+      background: var(--red);
+      border: none;
+      border-radius: 6px;
+      color: var(--white);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: background 0.2s;
+    }
+
+    .search-box button:hover { background: #a80000; }
+
+    #resultado {
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid #2a2a2a;
+      border-top: 3px solid var(--red);
+      border-radius: 10px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .card-img {
+      width: 130px;
+      height: 130px;
+      image-rendering: pixelated;
+      filter: drop-shadow(0 0 10px rgba(34, 86, 168, 0.4));
+    }
+
+    .card-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-transform: capitalize;
+      letter-spacing: 1px;
+      color: var(--white);
+    }
+
+    .card-id {
+      font-size: 0.8rem;
+      color: #555;
+      letter-spacing: 2px;
+      margin-top: -10px;
+    }
+
+    .card-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--blue), transparent);
+    }
+
+    .card-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 24px;
+      width: 100%;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--blue-light);
+    }
+
+    .types {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .type-badge {
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: var(--blue);
+      color: var(--white);
+    }
+
+    .error-msg {
+      color: var(--red);
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 16px;
+      border: 1px solid #3a0000;
+      border-radius: 6px;
+      background: #1a0000;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .loader {
+      width: 36px;
+      height: 36px;
+      border: 3px solid #222;
+      border-top-color: var(--red);
+      border-right-color: var(--blue-light);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <svg class="pokeball-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="48" fill="#111" stroke="#333" stroke-width="2"/>
+      <path d="M2 50 Q2 2 50 2 Q98 2 98 50Z" fill="#cc0000"/>
+      <rect x="2" y="46" width="96" height="8" fill="#333"/>
+      <circle cx="50" cy="50" r="14" fill="#111" stroke="#333" stroke-width="4"/>
+      <circle cx="50" cy="50" r="7" fill="#f0f0f0"/>
+    </svg>
+    <h1><span class="red">poke</span><span class="blue">Msz</span></h1>
+    <p class="byline">Yhudiel Mendoza Sanchez &nbsp;·&nbsp; 22161164</p>
+  </header>
+
+  <div class="search-box">
+    <input type="text" id="inputPoke" placeholder="nombre o número..." autocomplete="off" />
+    <button onclick="buscarPokemon()">Buscar</button>
+  </div>
+
+  <div id="resultado"></div>
+
+  <script>
+    const input = document.getElementById('inputPoke');
+    const resultado = document.getElementById('resultado');
+
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') buscarPokemon(); });
+
+    async function buscarPokemon() {
+      const query = input.value.trim().toLowerCase();
+      if (!query) return;
+
+      resultado.innerHTML = '<div class="loader"></div>';
+
+      try {
+        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${query}`);
+        if (!res.ok) throw new Error('No encontrado');
+        const data = await res.json();
+        renderCard(data);
+      } catch {
+        resultado.innerHTML = `<div class="error-msg">Pokémon no encontrado. Verifica el nombre o número.</div>`;
+      }
+    }
+
+    function renderCard(p) {
+      const imagen = p.sprites.front_default;
+      const tipos = p.types.map(t => `<span class="type-badge">${t.type.name}</span>`).join('');
+
+      resultado.innerHTML = `
+        <div class="card">
+          <img class="card-img" src="${imagen}" alt="${p.name}" />
+          <div class="card-name">${p.name}</div>
+          <div class="card-id">#${String(p.id).padStart(4, '0')}</div>
+          <div class="card-divider"></div>
+          <div class="card-stats">
+            <div class="stat">
+              <span class="stat-label">Peso</span>
+              <span class="stat-value">${(p.weight / 10).toFixed(1)} kg</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Altura</span>
+              <span class="stat-value">${(p.height / 10).toFixed(1)} m</span>
+            </div>
+          </div>
+          <div class="types">${tipos}</div>
+        </div>
+      `;
+    }
+  </script>
+
+</body>
+</html>
