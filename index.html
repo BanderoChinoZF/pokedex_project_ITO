@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buscador de Pokémon</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #2c3e50;
+    color: #ecf0f1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px;
+    min-height: 100vh;
+  }
+  h1 { margin-bottom: 24px; }
+  .buscador {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  input {
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: none;
+    font-size: 16px;
+    width: 220px;
+  }
+  button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    background: #e74c3c;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  button:hover { background: #c0392b; }
+
+  .tarjeta {
+    background: #8e9fb1;
+    border-radius: 12px;
+    padding: 24px;
+    width: 260px;
+    text-align: center;
+    display: none; /* se muestra solo cuando hay datos */
+  }
+  .tarjeta img {
+    width: 150px;
+    height: 150px;
+    image-rendering: pixelated;
+  }
+  .tarjeta h2 {
+    text-transform: capitalize;
+    margin: 8px 0 4px;
+  }
+  .tarjeta p { margin: 4px 0; color: #bdc3c7; }
+
+  .error {
+    color: #e74c3c;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+  <h1>🔍 Buscador de Pokémon</h1>
+
+  <div class="buscador">
+    <input type="text" id="inputPokemon" placeholder="Nombre o número (ej: pikachu, 25)">
+    <button id="btnBuscar">Buscar</button>
+  </div>
+
+  <p id="mensajeError" class="error"></p>
+
+  <div class="tarjeta" id="tarjetaPokemon">
+    <img id="imgPokemon" src="" alt="Sprite del Pokémon">
+    <h2 id="nombrePokemon"></h2>
+    <p id="idPokemon"></p>
+    <p id="pesoPokemon"></p>
+  </div>
+
+  <script>
+    // 1. Referencias a los elementos del DOM que vamos a usar
+    const inputPokemon = document.getElementById('inputPokemon');
+    const btnBuscar = document.getElementById('btnBuscar');
+    const tarjeta = document.getElementById('tarjetaPokemon');
+    const mensajeError = document.getElementById('mensajeError');
+
+    const imgPokemon = document.getElementById('imgPokemon');
+    const nombrePokemon = document.getElementById('nombrePokemon');
+    const idPokemon = document.getElementById('idPokemon');
+    const pesoPokemon = document.getElementById('pesoPokemon');
+
+    // 2. Función que hace la petición a la PokeAPI
+    async function buscarPokemon() {
+      // Limpiamos mensajes/tarjeta anteriores
+      mensajeError.textContent = '';
+      tarjeta.style.display = 'none';
+
+      // Tomamos el valor del input, en minúsculas y sin espacios
+      // (la API es sensible a mayúsculas/espacios)
+      const nombreOId = inputPokemon.value.trim().toLowerCase();
+
+      if (!nombreOId) {
+        mensajeError.textContent = 'Escribe un nombre o número de Pokémon.';
+        return;
+      }
+
+      try {
+        // 3. Petición GET al endpoint indicado en la tarea
+        const respuesta = await fetch(`https://pokeapi.co/api/v2/pokemon/${nombreOId}`);
+
+        // Si el Pokémon no existe, la API responde con un status distinto de 200
+        if (!respuesta.ok) {
+          throw new Error('Pokémon no encontrado');
+        }
+
+        // 4. Convertimos la respuesta a un objeto JavaScript
+        const data = await respuesta.json();
+
+        // 5. Navegamos el objeto para sacar lo que nos pide el reto:
+        //    nombre, id, peso e imagen frontal
+        const nombre = data.name;
+        const id = data.id;
+        const peso = data.weight;
+        const imagen = data.sprites.front_default;
+
+        // 6. Insertamos esos datos en el DOM
+        nombrePokemon.textContent = nombre;
+        idPokemon.textContent = `N.º ${id}`;
+        pesoPokemon.textContent = `Peso: ${peso} hectogramos`;
+        imgPokemon.src = imagen;
+        imgPokemon.alt = `Sprite de ${nombre}`;
+
+        // 7. Mostramos la tarjeta
+        tarjeta.style.display = 'block';
+
+      } catch (error) {
+        // Si algo falla (nombre mal escrito, sin conexión, etc.)
+        mensajeError.textContent = 'No se encontró ese Pokémon. Revisa el nombre o número.';
+        console.error(error);
+      }
+    }
+
+    // 8. Eventos: buscar al hacer clic o al presionar Enter
+    btnBuscar.addEventListener('click', buscarPokemon);
+    inputPokemon.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') buscarPokemon();
+    });
+  </script>
+
+</body>
+</html>
