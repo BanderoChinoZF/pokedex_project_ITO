@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pokédex · Buscador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --rojo:#D8332A;
+    --rojo-osc:#A8241D;
+    --crema:#F6F1E3;
+    --carbon:#232323;
+    --azul:#3D6FB0;
+    --amarillo:#F4C430;
+    --panel:#2E2E2E;
+    --vidrio:#8CD3E0;
+    --ok:#4C9A5A;
+    color-scheme: light;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    min-height:100%;
+    background:
+      radial-gradient(circle at 20% -10%, #ffffff22, transparent 40%),
+      linear-gradient(180deg, #EFE7D2 0%, #E3D9BE 100%);
+    font-family:'Baloo 2', system-ui, sans-serif;
+    color:var(--carbon);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:48px 16px calc(48px + env(safe-area-inset-bottom,0px));
+    padding-top:calc(48px + env(safe-area-inset-top,0px));
+  }
+
+  .device{
+    width:100%;
+    max-width:420px;
+    background:var(--rojo);
+    border-radius:28px 28px 18px 18px;
+    box-shadow:
+      0 2px 0 #ffffff55 inset,
+      0 -6px 0 var(--rojo-osc) inset,
+      0 20px 40px -12px rgba(0,0,0,.45);
+    padding:18px 18px 24px;
+    position:relative;
+  }
+
+  .device::before{
+    content:"";
+    position:absolute;
+    top:14px; left:18px;
+    width:34px; height:34px;
+    border-radius:50%;
+    background:radial-gradient(circle at 32% 30%, #dff3f7 0%, var(--vidrio) 40%, #3f95a8 78%, #1f5c6b 100%);
+    box-shadow:0 0 0 4px #d9d9d9, 0 0 0 6px #6b6b6b, 0 4px 6px rgba(0,0,0,.4);
+  }
+  .luces{
+    position:absolute;
+    top:20px; left:66px;
+    display:flex; gap:8px;
+  }
+  .luces span{
+    width:10px;height:10px;border-radius:50%;
+    box-shadow:0 0 0 2px rgba(0,0,0,.25) inset;
+  }
+  .luces span:nth-child(1){background:#e14848;}
+  .luces span:nth-child(2){background:#f4c430;}
+  .luces span:nth-child(3){background:#4c9a5a;}
+
+  .pantalla-marco{
+    margin-top:58px;
+    background:var(--panel);
+    border-radius:14px;
+    padding:14px;
+    box-shadow: 0 3px 0 #00000055 inset, 0 -2px 0 #ffffff11 inset;
+  }
+
+  .pantalla{
+    background:linear-gradient(180deg,#eef7ea,#dcecd6);
+    border-radius:8px;
+    min-height:300px;
+    padding:18px 16px;
+    box-shadow: inset 0 0 0 3px #b9c9b0, inset 0 6px 14px rgba(0,0,0,.15);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .estado-inicial, .estado-error{
+    margin:auto;
+    text-align:center;
+    color:#5b6b57;
+    font-size:15px;
+    line-height:1.5;
+    max-width:26ch;
+  }
+  .estado-error{color:#8a3a2b;}
+
+  .cargando{
+    margin:auto;
+    text-align:center;
+    font-family:'VT323', monospace;
+    font-size:22px;
+    letter-spacing:.5px;
+    color:#4a5a47;
+  }
+  .cargando::after{
+    content:"";
+    display:inline-block;
+    width:1ch;
+    animation:puntos 1.1s steps(4) infinite;
+    overflow:hidden;
+    vertical-align:bottom;
+  }
+  @keyframes puntos{
+    0%{width:0;} 100%{width:3ch;}
+  }
+
+  .tarjeta{display:none;}
+  .tarjeta.visible{display:flex; flex-direction:column; gap:6px;}
+
+  .fila-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-family:'VT323', monospace;
+    color:#3c4a39;
+  }
+  .id-tag{font-size:20px; letter-spacing:1px;}
+  .tipo-lista{display:flex; gap:6px;}
+  .chip-tipo{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:11px;
+    padding:3px 9px;
+    border-radius:999px;
+    color:#fff;
+    text-transform:lowercase;
+    letter-spacing:.3px;
+  }
+
+  .sprite-marco{
+    align-self:center;
+    width:150px; height:150px;
+    background:
+      radial-gradient(circle, #ffffffaa 0%, #ffffff33 60%, transparent 72%),
+      repeating-linear-gradient(0deg, #c9d9c1 0 1px, transparent 1px 24px),
+      repeating-linear-gradient(90deg, #c9d9c1 0 1px, transparent 1px 24px);
+    border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    image-rendering:pixelated;
+  }
+  .sprite-marco img{
+    width:120px; height:120px;
+    image-rendering:pixelated;
+    filter:drop-shadow(0 6px 4px rgba(0,0,0,.18));
+  }
+
+  .nombre-pkm{
+    text-align:center;
+    font-weight:800;
+    font-size:26px;
+    text-transform:capitalize;
+    color:var(--rojo-osc);
+    margin:2px 0 4px;
+  }
+
+  .stats-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:4px;
+  }
+  .stat-box{
+    background:#ffffffaa;
+    border-radius:8px;
+    padding:8px 10px;
+    text-align:center;
+  }
+  .stat-box .etiqueta{
+    font-size:11px;
+    color:#5b6b57;
+    font-weight:700;
+  }
+  .stat-box .valor{
+    font-family:'VT323', monospace;
+    font-size:22px;
+    color:var(--carbon);
+  }
+
+  .controles{
+    margin-top:16px;
+    display:flex;
+    gap:8px;
+  }
+  .controles input{
+    flex:1;
+    padding:12px 14px;
+    border-radius:10px;
+    border:none;
+    font-family:'Baloo 2', sans-serif;
+    font-size:16px;
+    font-weight:600;
+    background:#fff;
+    color:var(--carbon);
+    box-shadow:0 2px 0 #00000022 inset, 0 2px 4px rgba(0,0,0,.15);
+  }
+  .controles input::placeholder{color:#9a9a9a; font-weight:500;}
+  .controles input:focus{outline:3px solid var(--amarillo);}
+
+  .controles button{
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    background:var(--azul);
+    color:#fff;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 3px 0 #274a75, 0 4px 8px rgba(0,0,0,.2);
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .controles button:hover{filter:brightness(1.05);}
+  .controles button:active{
+    transform:translateY(2px);
+    box-shadow:0 1px 0 #274a75, 0 2px 4px rgba(0,0,0,.2);
+  }
+  .controles button:focus-visible, .controles input:focus-visible{
+    outline:3px solid var(--amarillo);
+    outline-offset:2px;
+  }
+
+  .pista{
+    margin-top:10px;
+    text-align:center;
+    font-size:12px;
+    color:#5c2018;
+    opacity:.75;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cargando::after{animation:none; width:3ch;}
+  }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <span class="luces"><span></span><span></span><span></span></span>
+
+  <div class="pantalla-marco">
+    <div class="pantalla" id="pantalla" aria-live="polite">
+
+      <p class="estado-inicial" id="estadoInicial">
+        Escribe el nombre o el número de un Pokémon y pulsa Buscar.
+      </p>
+
+      <p class="cargando" id="cargando" style="display:none">Buscando</p>
+
+      <p class="estado-error" id="estadoError" style="display:none"></p>
+
+      <div class="tarjeta" id="tarjeta">
+        <div class="fila-top">
+          <span class="id-tag" id="pkmId">#000</span>
+          <span class="tipo-lista" id="pkmTipos"></span>
+        </div>
+        <div class="sprite-marco">
+          <img id="pkmImg" src="" alt="">
+        </div>
+        <p class="nombre-pkm" id="pkmNombre"></p>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="etiqueta">PESO</div>
+            <div class="valor" id="pkmPeso">--</div>
+          </div>
+          <div class="stat-box">
+            <div class="etiqueta">ALTURA</div>
+            <div class="valor" id="pkmAltura">--</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="controles">
+    <input
+      id="entrada"
+      type="text"
+      placeholder="ej. pikachu o 25"
+      autocomplete="off"
+      inputmode="search"
+      aria-label="Nombre o número del Pokémon"
+    >
+    <button id="botonBuscar" type="button">Buscar</button>
+  </div>
+
+  <p class="pista">Datos vía PokeAPI · pokeapi.co</p>
+</div>
+
+<script>
+  // --- Referencias a elementos del DOM ---
+  const entrada       = document.getElementById('entrada');
+  const botonBuscar    = document.getElementById('botonBuscar');
+
+  const estadoInicial = document.getElementById('estadoInicial');
+  const cargando      = document.getElementById('cargando');
+  const estadoError   = document.getElementById('estadoError');
+  const tarjeta        = document.getElementById('tarjeta');
+
+  const pkmId      = document.getElementById('pkmId');
+  const pkmTipos    = document.getElementById('pkmTipos');
+  const pkmImg      = document.getElementById('pkmImg');
+  const pkmNombre  = document.getElementById('pkmNombre');
+  const pkmPeso    = document.getElementById('pkmPeso');
+  const pkmAltura  = document.getElementById('pkmAltura');
+
+  // Colores de referencia por tipo (para los chips)
+  const coloresTipo = {
+    normal:'#A8A77A', fire:'#EE8130', water:'#6390F0', electric:'#F7D02C',
+    grass:'#7AC74C', ice:'#96D9D6', fighting:'#C22E28', poison:'#A33EA1',
+    ground:'#E2BF65', flying:'#A98FF3', psychic:'#F95587', bug:'#A6B91A',
+    rock:'#B6A136', ghost:'#735797', dragon:'#6F35FC', dark:'#705746',
+    steel:'#B7B7CE', fairy:'#D685AD'
+  };
+
+  // Muestra únicamente uno de los cuatro paneles de la pantalla
+  function mostrarPanel(nombrePanel){
+    estadoInicial.style.display = 'none';
+    cargando.style.display      = 'none';
+    estadoError.style.display   = 'none';
+    tarjeta.classList.remove('visible');
+
+    if (nombrePanel === 'inicial') estadoInicial.style.display = 'block';
+    if (nombrePanel === 'cargando') cargando.style.display = 'block';
+    if (nombrePanel === 'error') estadoError.style.display = 'block';
+    if (nombrePanel === 'tarjeta') tarjeta.classList.add('visible');
+  }
+
+  // Pinta los datos del Pokémon recibido en la tarjeta
+  function pintarPokemon(data){
+    pkmId.textContent = '#' + String(data.id).padStart(3, '0');
+    pkmNombre.textContent = data.name;
+
+    // sprites.front_default es la imagen frontal por defecto
+    pkmImg.src = data.sprites.front_default || '';
+    pkmImg.alt = 'Sprite frontal de ' + data.name;
+
+    // La API entrega el peso en hectogramos y la altura en decímetros
+    pkmPeso.textContent = (data.weight / 10) + ' kg';
+    pkmAltura.textContent = (data.height / 10) + ' m';
+
+    pkmTipos.innerHTML = '';
+    data.types.forEach(t => {
+      const chip = document.createElement('span');
+      chip.className = 'chip-tipo';
+      chip.textContent = t.type.name;
+      chip.style.background = coloresTipo[t.type.name] || '#666';
+      pkmTipos.appendChild(chip);
+    });
+
+    mostrarPanel('tarjeta');
+  }
+
+  async function buscarPokemon(){
+    const consulta = entrada.value.trim().toLowerCase();
+
+    if (!consulta){
+      estadoError.textContent = 'Escribe un nombre o número primero.';
+      mostrarPanel('error');
+      return;
+    }
+
+    mostrarPanel('cargando');
+
+    try{
+      const respuesta = await fetch(`https://pokeapi.co/api/v2/pokemon/${consulta}`);
+
+      if (!respuesta.ok){
+        throw new Error('no-encontrado');
+      }
+
+      const data = await respuesta.json();
+      pintarPokemon(data);
+
+    }catch(err){
+      estadoError.textContent = `No encontré a "${consulta}". Revisa el nombre o número e intenta de nuevo.`;
+      mostrarPanel('error');
+    }
+  }
+
+  botonBuscar.addEventListener('click', buscarPokemon);
+  entrada.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') buscarPokemon();
+  });
+</script>
+
+</body>
+</html>
