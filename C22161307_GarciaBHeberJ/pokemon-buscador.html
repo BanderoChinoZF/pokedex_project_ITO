@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Buscador de Pokémon - Subtarea 1</title>
+<style>
+  :root {
+    --bg: #f4f4f8;
+    --card-bg: #ffffff;
+    --primary: #e3350d;
+    --primary-dark: #b8290a;
+    --text: #2b2b2b;
+    --muted: #6b6b6b;
+    --border: #e0e0e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16171d;
+      --card-bg: #22232b;
+      --text: #eaeaea;
+      --muted: #a0a0a8;
+      --border: #33343d;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16171d;
+    --card-bg: #22232b;
+    --text: #eaeaea;
+    --muted: #a0a0a8;
+    --border: #33343d;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: 24px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+    padding-top: calc(24px + env(safe-area-inset-top, 0px));
+  }
+
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+  }
+
+  p.subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-top: 0;
+    margin-bottom: 24px;
+  }
+
+  .search-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  input#pokemonInput {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 1rem;
+    min-width: 0;
+  }
+
+  button#buscarBtn {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  button#buscarBtn:hover {
+    background: var(--primary-dark);
+  }
+
+  button#buscarBtn:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  #resultado {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  #resultado img {
+    width: 140px;
+    height: 140px;
+    image-rendering: pixelated;
+  }
+
+  #resultado h2 {
+    margin: 4px 0 0;
+    text-transform: capitalize;
+  }
+
+  #resultado .dato {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .mensaje {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .error {
+    color: var(--primary);
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Buscador de Pokémon</h1>
+    <p class="subtitle">Subtarea 1 — Consumo directo de PokeAPI</p>
+
+    <div class="search-box">
+      <input id="pokemonInput" type="text" placeholder="Nombre o número (ej. pikachu, 25)" />
+      <button id="buscarBtn">Buscar</button>
+    </div>
+
+    <div id="resultado">
+      <p class="mensaje">Escribe un nombre o ID y presiona Buscar.</p>
+    </div>
+  </div>
+
+  <script>
+    // Referencias al DOM
+    const input = document.getElementById('pokemonInput');
+    const boton = document.getElementById('buscarBtn');
+    const resultado = document.getElementById('resultado');
+
+    // Función que consulta la PokeAPI y pinta la tarjeta
+    async function buscarPokemon() {
+      const termino = input.value.trim().toLowerCase();
+
+      if (!termino) {
+        resultado.innerHTML = '<p class="error">Escribe un nombre o un número.</p>';
+        return;
+      }
+
+      // Estado de carga
+      boton.disabled = true;
+      boton.textContent = 'Buscando...';
+      resultado.innerHTML = '<p class="mensaje">Cargando...</p>';
+
+      try {
+        // Endpoint indicado en la práctica
+        const url = `https://pokeapi.co/api/v2/pokemon/${termino}`;
+        const respuesta = await fetch(url);
+
+        if (!respuesta.ok) {
+          // 404 = no existe ese pokemon/id
+          throw new Error('No se encontró ese Pokémon. Revisa el nombre o número.');
+        }
+
+        const data = await respuesta.json();
+
+        // Extraemos lo que pide el reto: nombre, id, peso e imagen frontal
+        const nombre = data.name;
+        const id = data.id;
+        const peso = data.weight; // viene en hectogramos
+        const imagen = data.sprites.front_default;
+
+        // Insertamos la tarjeta en el DOM
+        resultado.innerHTML = `
+          <img src="${imagen ?? ''}" alt="Sprite de ${nombre}">
+          <h2>${nombre}</h2>
+          <span class="dato">#${id}</span>
+          <span class="dato">Peso: ${peso / 10} kg</span>
+        `;
+
+      } catch (err) {
+        resultado.innerHTML = `<p class="error">${err.message}</p>`;
+      } finally {
+        boton.disabled = false;
+        boton.textContent = 'Buscar';
+      }
+    }
+
+    // Eventos: clic en el botón o presionar Enter
+    boton.addEventListener('click', buscarPokemon);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') buscarPokemon();
+    });
+  </script>
+</body>
+</html>
