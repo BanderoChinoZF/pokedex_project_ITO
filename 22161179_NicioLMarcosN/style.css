@@ -1,0 +1,129 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #2a2a2a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
+.pokedex-container {
+    background-color: #dc0a2d;
+    padding: 30px 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+    border: 4px solid #8b0000;
+}
+
+header h1 {
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+header p {
+    color: #ffcc00;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.search-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-section input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+}
+
+.search-section button {
+    padding: 10px 15px;
+    background-color: #ffcc00;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.pokemon-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    display: none;
+}
+
+.image-container {
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #dcdcdc;
+}
+
+.image-container img {
+    width: 100px;
+    height: 100px;
+}
+
+.poke-id {
+    background-color: #333;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.pokemon-info h2 {
+    margin: 10px 0;
+    text-transform: capitalize;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.types {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.types span {
+    background-color: #58a598;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    text-transform: capitalize;
+}
+
+.error-msg {
+    background-color: #ffcccc;
+    color: #cc0000;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-weight: bold;
+    display: none;
+}
