@@ -1,0 +1,45 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    margin-top: 40px;
+}
+
+.buscador {
+    margin: 30px;
+}
+
+input {
+    padding: 10px;
+    width: 220px;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.tarjeta {
+    width: 250px;
+    margin: auto;
+    padding: 20px;
+
+    background-color: white;
+
+    border-radius: 10px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tarjeta img {
+    width: 150px;
+}
+
+.tarjeta h2 {
+    text-transform: capitalize;
+}
