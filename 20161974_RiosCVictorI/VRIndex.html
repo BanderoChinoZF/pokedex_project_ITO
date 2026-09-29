@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscador de Pokémon</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+        }
+        #contenedor {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="contenedor">
+        <div>
+            <input type="text" id="entrada" placeholder="Nombre o ID">
+            <button id="boton">Buscar</button>
+        </div>
+        
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        const entrada = document.getElementById('entrada');
+        const boton = document.getElementById('boton');
+        const resultado = document.getElementById('resultado');
+
+        async function buscar() {
+            const valor = entrada.value.toLowerCase().trim();
+            if (valor === '') return;
+
+            try {
+                const respuesta = await fetch(`https://pokeapi.co/api/v2/pokemon/${valor}`);
+                
+                if (!respuesta.ok) {
+                    resultado.innerHTML = '<p>Pokémon no encontrado.</p>';
+                    return;
+                }
+                
+                const datos = await respuesta.json();
+                
+                const nombre = datos.name;
+                const id = datos.id;
+                const imagen = datos.sprites.front_default;
+                
+                const tipos = datos.types.map(t => t.type.name).join(', ');
+                const habilidades = datos.abilities.map(h => h.ability.name).join(', ');
+
+                resultado.innerHTML = `
+                    <h3>${nombre} (ID: ${id})</h3>
+                    <img src="${imagen}" alt="Imagen de ${nombre}">
+                    <p>Tipo: ${tipos}</p>
+                    <p>Habilidad: ${habilidades}</p>
+                `;
+            } catch (error) {
+                resultado.innerHTML = '<p>Error en la búsqueda.</p>';
+            }
+        }
+
+        boton.addEventListener('click', buscar);
+    </script>
+</body>
+</html>
