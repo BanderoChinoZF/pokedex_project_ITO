@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex</title>
+    <link rel="stylesheet" href="visualesPokedex.css">
+    <script src="appPokedex.js"></script>
+</head>
+
+<body>
+    <div class="contenedorPrincipal">
+        <div class="encabezadoPokedex">
+            <h1>Pokedex Oaxaca</h1>
+            <h3>Busca tu pokemon mediante su nombre o ID</p>
+        </div>
+
+        <div class="buscador">
+            <input type="text" id="buscadorPokedex" placeholder="Ingrese el nombre del Pokemon o su ID">
+            <button onclick="buscarPokemon()">Buscar</button>
+        </div>
+
+        <div class="tarjetaPokemon">
+            <div class="encabezadoPokemon">
+                <p><span id="nombrePkm"></span></p>
+                <p><span id="idPkm"></span></p>
+            </div>
+
+            <div class="contenedorImagenPokemon">
+                <img id="imagenPkm" src="">
+            </div>
+
+            <div class="contenedorDatosPkm">
+                <h2>Información</h2>
+                <p>Peso: <span id="pesoPkm"></span> kg</p>
+                <p>Altura: <span id="alturaPkm"></span> mts</p>
+                <p>Tipo: <span id="tipoPkm"></span></p>
+            </div>
+        </div>
+</body>
+
+</html>
