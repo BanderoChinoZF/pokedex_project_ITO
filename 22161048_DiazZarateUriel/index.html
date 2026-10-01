@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex - Búsqueda por ID/Nombre</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="pokedex-container">
+        <!-- Cuerpo de la Pokédex -->
+        <div class="pokedex-body">
+
+            <!-- Parte superior con círculos decorativos -->
+            <div class="pokedex-header">
+                <div class="main-light">
+                    <div class="light-inner"></div>
+                    <div class="light-reflection"></div>
+                </div>
+                <div class="small-lights">
+                    <div class="small-light red"></div>
+                    <div class="small-light yellow"></div>
+                    <div class="small-light green"></div>
+                </div>
+            </div>
+
+            <!-- Pantalla principal -->
+            <div class="screen-container">
+                <div class="screen-frame">
+                    <div class="screen-lights">
+                        <div class="screen-light"></div>
+                        <div class="screen-light"></div>
+                    </div>
+
+                    <div class="screen-display" id="screenDisplay">
+                        <!-- Pantalla de bienvenida -->
+                        <div class="welcome-screen">
+                            <p>Ingresa el nombre o número de un Pokémon</p>
+                        </div>
+                    </div>
+
+                    <div class="pokemon-info-display" id="pokemonInfoDisplay">
+                        <!-- Aquí se mostrará: ID - Nombre -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campo de búsqueda -->
+            <div class="search-container">
+                <input
+                    type="text"
+                    id="pokemonInput"
+                    placeholder="Name or Number"
+                    autocomplete="off"
+                >
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="navigation-buttons">
+                <button class="nav-btn" id="prevButton">
+                    <span>Anterior &lt;</span>
+                </button>
+                <button class="nav-btn" id="nextButton">
+                    <span>&gt; Próximo</span>
+                </button>
+            </div>
+
+            <!-- Bisagra derecha decorativa -->
+            <div class="hinge hinge-top"></div>
+            <div class="hinge hinge-bottom"></div>
+
+        </div>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div id="errorMessage" class="error-message"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
