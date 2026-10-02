@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokédex | Buscador Pokémon</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="pokedex" aria-labelledby="page-title">
+    <header class="pokedex-header">
+      <div class="header-lights" aria-hidden="true">
+        <span class="light light-main"></span>
+        <span class="light light-red"></span>
+        <span class="light light-yellow"></span>
+        <span class="light light-green"></span>
+      </div>
+      <div>
+        <p class="eyebrow">PokéAPI · consumo directo</p>
+        <h1 id="page-title">Pokédex</h1>
+      </div>
+      <span class="header-mark" aria-hidden="true">◒</span>
+    </header>
+
+    <section class="pokedex-body">
+      <div class="screen-frame">
+        <div class="screen" id="screen">
+          <div class="screen-topline"><span>DATA LINK</span><span id="screen-signal">● ● ●</span></div>
+          <div class="screen-placeholder" id="screen-placeholder">
+            <span class="scan-dot"></span>
+            <p>LISTA PARA<br>ESCANEAR</p>
+          </div>
+          <img id="pokemon-image" class="pokemon-image hidden" src="" alt="">
+          <div class="screen-footer"><span>POKÉDEX v1.0</span><span>ONLINE</span></div>
+        </div>
+      </div>
+
+      <div class="controls-panel">
+        <p class="panel-label">Buscar registro</p>
+        <form id="search-form" class="search-box">
+          <label for="pokemon-input">Nombre o número del Pokémon</label>
+          <div class="input-row">
+            <input id="pokemon-input" name="pokemon" type="search" placeholder="pikachu o 25" autocomplete="off" required>
+            <button id="search-button" type="submit">Buscar</button>
+          </div>
+        </form>
+        <p id="status" class="status" role="status" aria-live="polite">Ingresa un nombre o número para comenzar.</p>
+
+        <article id="pokemon-card" class="pokemon-card hidden" aria-live="polite">
+          <div class="identity-line">
+            <span id="pokemon-id" class="pokemon-id"></span>
+            <span id="pokemon-types" class="pokemon-types"></span>
+          </div>
+          <h2 id="pokemon-name" class="pokemon-name"></h2>
+          <dl class="details">
+            <div><dt>Peso</dt><dd id="pokemon-weight"></dd></div>
+            <div><dt>Altura</dt><dd id="pokemon-height"></dd></div>
+          </dl>
+        </article>
+
+        <div class="console-controls" aria-hidden="true">
+          <span class="d-pad"><i></i></span>
+          <span class="small-screen"></span>
+          <span class="action-button action-a">A</span>
+          <span class="action-button action-b">B</span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="pokedex-footer"><span>REGIÓN KANTO</span><span>NO. 001 - 1025</span></footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
