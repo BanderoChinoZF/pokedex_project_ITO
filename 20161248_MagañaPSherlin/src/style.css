@@ -1,0 +1,49 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+}
+
+.contenedor {
+    width: 400px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.buscador {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+input {
+    padding: 10px;
+}
+
+button {
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.tarjeta {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.2);
+}
+
+.tarjeta img {
+    width: 180px;
+}
+
+.tarjeta h2 {
+    text-transform: capitalize;
+}
+
+.dato {
+    margin: 8px;
+}
+
+.error {
+    color: red;
+}

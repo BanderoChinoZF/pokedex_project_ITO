@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        background-color: #f2f2f2;
+        text-align: center;
+    }
+    input{
+        padding: 10px;
+        width: 300px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+    button{
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    button:hover{
+        background-color: #45a049;
+    
+    }
+    #resultado{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.pokemon-card{
+    background: #ffffff;
+    width: 220px;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 3px solid #333;
+    position: relative;
+    text-align: center;
+}
+.pokemon-card::before{
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 8px;
+    background: linear-gradient(90deg, #e3350d, #ff6b6b);
+    border-radius: 16px 16px 0 0;
+}
+
+.card-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.pokemon-card h2{
+    text-transform: capitalize;
+    color: #222;
+}
+.pokemon-card .card-id{
+    color: #030303;
+    font-weight: bold;
+}
+.pokemon-card img{
+    width: 120px;
+    height: 120px;
+    image-rendering: pixelated;
+    background: radial-gradient(circle, #f7f7f7 60%, #ececec 100%);
+    border-radius: 50%;
+    padding: 8px;
+}
+.pokemon-card .card-datos{
+    margin-top: 10px;
+    text-align: left;
+    font-size: 0.9rem;
+}
+.pokemon-card .card-datos p{
+    display: flex;
+    justify-content: space-between;
+    border-top: 5px solid #686565;
+    padding: 6px 4px;
+    margin: 0;
+}
+.mensaje-error{
+    color: #e3350d;
+    font-weight: bold;
+}
+</style>
+<body>
+    <h1>Buscador de pokemons</h1>
+    <input type="text" id="searchInput" placeholder="coloca nombre o id, ejemplo:(pikachu o 25)">
+    <button id="searchButton" type="button" onclick="buscarPokemon()">Buscar</button>
+    <div id="resultado"></div>
+</body>
+<script>
+    const contenedorResultado = document.getElementById('resultado');
+
+    async function buscarPokemon() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        if (searchInput) {
+            fetch(`https://pokeapi.co/api/v2/pokemon/${searchInput}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Pokémon no encontrado');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const pokemonName = data.name;
+                    const pokemonId = data.id;
+                    const pokemonWeight = data.weight;
+                    const pokemonImage = data.sprites.front_default;
+                    pintarTarjeta(data);
+                })
+                .catch(error => {
+                    mostrarError(error.message);
+                });
+        } else {
+            alert('Por favor, ingresa un nombre o ID de Pokémon.');
+        }
+    };
+
+    pintarTarjeta = (pokemon) => {
+        contenedorResultado.innerHTML = `
+         <div class="pokemon-card">
+            <div class="card-header">
+                <h2>${pokemon.name}</h2>
+                <span class="card-id">N.º ${pokemon.id}</span>
+            </div>
+             <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
+             <div class="card-datos">
+                 <p><span>Peso</span><strong>${pokemon.weight}Kg</strong></p>
+             </div>
+         </div>
+     `;
+    };
+
+    mostrarError = (mensaje) => {
+    contenedorResultado.innerHTML = `<p class="mensaje-error">${mensaje}</p>`;
+};
+</script>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Pokémon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .card {
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            width: 250px;
+            margin: 30px auto;
+            box-shadow: 3px 3px 15px rgba(0,0,0,0.2);
+            background-color: #f9f9f9;
+        }
+        img {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Buscador de Pokémon</h2>
+    <input type="text" id="pokeInput" placeholder="Nombre o ID (ej. pikachu o 25)">
+    <button onclick="buscarPokemon()">Buscar</button>
+
+    <div id="resultado"></div>
+
+    <script>
+        function buscarPokemon() {
+            const input = document.getElementById('pokeInput').value.toLowerCase();
+            const contenedor = document.getElementById('resultado');
+            
+            contenedor.innerHTML = "<p>Buscando...</p>";
+
+            fetch(`https://pokeapi.co/api/v2/pokemon/${input}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Pokémon no encontrado. Verifica el nombre o ID.");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const nombre = data.name.toUpperCase();
+                    const id = data.id;
+                    const peso = data.weight / 10;
+                    const imagen = data.sprites.front_default;
+
+                    contenedor.innerHTML = `
+                        <div class="card">
+                            <h3>${nombre} (#${id})</h3>
+                            <img src="${imagen}" alt="${nombre}">
+                            <p><strong>Peso:</strong> ${peso} kilogramos</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    contenedor.innerHTML = `<p style="color: red;">${error.message}</p>`;
+                });
+        }
+    </script>
+</body>
+</html>
