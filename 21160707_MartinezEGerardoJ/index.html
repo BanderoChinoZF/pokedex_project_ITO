@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Pokémon</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="contenedor">
+    <h1>Buscador de Pokémon</h1>
+    <p class="subtitulo">Escribe el nombre o el número (ID) de un Pokémon</p>
+
+    <!-- Formulario de búsqueda -->
+    <div class="buscador">
+      <input
+        type="text"
+        id="inputPokemon"
+        placeholder="Ej: pikachu o 25"
+        autocomplete="off"
+      >
+      <button id="btnBuscar">Buscar</button>
+    </div>
+
+    <!-- Área de mensajes de error -->
+    <p id="mensajeError" class="error oculto"></p>
+
+    <!-- Tarjeta donde JavaScript insertará los datos -->
+    <section id="tarjeta" class="tarjeta oculto">
+      <img id="imagenPokemon" src="" alt="Imagen del Pokémon">
+      <h2 id="nombrePokemon"></h2>
+      <p><strong>ID:</strong> <span id="idPokemon"></span></p>
+      <p><strong>Peso:</strong> <span id="pesoPokemon"></span></p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

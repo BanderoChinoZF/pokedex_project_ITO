@@ -1,0 +1,119 @@
+/* ---------- Estilos generales ---------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(180deg, #ee1515 0%, #ee1515 45%, #222224 45%, #222224 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 16px;
+}
+
+.contenedor {
+  background: #f0f0f0;
+  border: 6px solid #222224;
+  border-radius: 20px;
+  padding: 30px 24px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+h1 {
+  color: #ee1515;
+  font-size: 2rem;
+  margin-bottom: 6px;
+}
+
+.subtitulo {
+  color: #555;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+/* ---------- Buscador ---------- */
+.buscador {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.buscador input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 3px solid #222224;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.buscador input:focus {
+  outline: none;
+  border-color: #3b4cca;
+}
+
+.buscador button {
+  padding: 10px 18px;
+  background: #3b4cca;
+  color: #fff;
+  border: 3px solid #222224;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.buscador button:hover {
+  background: #2a37a0;
+}
+
+/* ---------- Mensaje de error ---------- */
+.error {
+  background: #ffe0e0;
+  color: #b00000;
+  border: 2px solid #b00000;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+/* ---------- Tarjeta del Pokémon ---------- */
+.tarjeta {
+  background: #fff;
+  border: 4px solid #ffcb05;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.tarjeta img {
+  width: 160px;
+  height: 160px;
+  image-rendering: pixelated;
+  background: #e8f1ff;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.tarjeta h2 {
+  text-transform: capitalize;
+  color: #222224;
+  margin-bottom: 8px;
+}
+
+.tarjeta p {
+  color: #333;
+  margin: 4px 0;
+}
+
+/* Clase utilitaria para ocultar elementos */
+.oculto {
+  display: none;
+}
