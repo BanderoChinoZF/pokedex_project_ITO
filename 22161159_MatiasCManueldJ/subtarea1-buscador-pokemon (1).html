@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subtarea 1 · Buscador de Pokémon</title>
+<style>
+  :root{
+    --rojo: #D93B36;
+    --rojo-oscuro: #A8251F;
+    --crema: #FBF6EC;
+    --tinta: #232323;
+    --dorado: #F2B705;
+    --gris-linea: #d8cfc0;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background: var(--crema);
+    font-family: 'Trebuchet MS', 'Verdana', sans-serif;
+    color: var(--tinta);
+    display:flex;
+    justify-content:center;
+    padding: 40px 16px;
+  }
+
+  .device{
+    width:100%;
+    max-width: 420px;
+    background: var(--rojo);
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0 18px 0 var(--rojo-oscuro), 0 22px 30px rgba(0,0,0,.25);
+    position: relative;
+  }
+
+  .device::before{
+    content:"";
+    position:absolute;
+    top: 22px; left: 22px;
+    width: 22px; height: 22px;
+    background: radial-gradient(circle at 35% 30%, #bfe8ff, #4fa8e0 60%, #1c6fa8);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px #fff, 0 0 0 5px #999;
+  }
+
+  header{
+    text-align: center;
+    padding: 18px 0 14px;
+  }
+
+  header h1{
+    color: #fff;
+    font-size: 1.4rem;
+    letter-spacing: .5px;
+    margin: 0;
+    text-shadow: 0 2px 0 var(--rojo-oscuro);
+  }
+
+  header p{
+    color: rgba(255,255,255,.85);
+    font-size: .8rem;
+    margin: 4px 0 0;
+  }
+
+  .pantalla{
+    background: var(--crema);
+    border: 6px solid var(--tinta);
+    border-radius: 14px;
+    padding: 16px;
+    min-height: 320px;
+  }
+
+  form{
+    display:flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  input[type="text"]{
+    flex:1;
+    border: 2px solid var(--tinta);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 1rem;
+    background:#fff;
+  }
+
+  input[type="text"]:focus{
+    outline: 3px solid var(--dorado);
+    outline-offset: 1px;
+  }
+
+  button{
+    background: var(--dorado);
+    color: var(--tinta);
+    border: 2px solid var(--tinta);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: .95rem;
+  }
+
+  button:hover{ background:#ffcb2f; }
+  button:disabled{ opacity:.6; cursor: wait; }
+
+  #resultado{
+    min-height: 220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .estado{
+    text-align:center;
+    color:#7a7263;
+    font-size: .9rem;
+    padding: 20px 10px;
+  }
+
+  .tarjeta{
+    width:100%;
+    text-align:center;
+    animation: aparecer .25s ease-out;
+  }
+
+  @keyframes aparecer{
+    from{ opacity:0; transform: translateY(6px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  .tarjeta img{
+    width: 140px;
+    height: 140px;
+    image-rendering: pixelated;
+    background: repeating-linear-gradient(45deg, #fff, #fff 10px, #f1ead9 10px, #f1ead9 20px);
+    border: 2px solid var(--gris-linea);
+    border-radius: 10px;
+  }
+
+  .tarjeta h2{
+    margin: 10px 0 2px;
+    text-transform: capitalize;
+    font-size: 1.3rem;
+  }
+
+  .numero{
+    color:#8a8272;
+    font-weight:bold;
+    font-size:.9rem;
+    margin-bottom: 10px;
+  }
+
+  .datos{
+    display:flex;
+    justify-content:center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .dato{
+    background:#fff;
+    border: 1px solid var(--gris-linea);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: .85rem;
+  }
+
+  .dato strong{ display:block; font-size: 1rem; }
+
+  .tipos{
+    margin-top: 10px;
+    display:flex;
+    gap:6px;
+    justify-content:center;
+    flex-wrap: wrap;
+  }
+
+  .tipo{
+    background: var(--rojo);
+    color:#fff;
+    font-size: .72rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+    text-transform: capitalize;
+  }
+
+  .error{ color: var(--rojo-oscuro); font-weight: bold; }
+</style>
+</head>
+<body>
+
+  <div class="device">
+    <header>
+      <h1>Pokédex · Subtarea 1</h1>
+      <p>Búsqueda por nombre o número (Fetch + PokeAPI)</p>
+    </header>
+
+    <div class="pantalla">
+      <div id="form-busqueda">
+        <input
+          type="text"
+          id="input-pokemon"
+          placeholder="Ej: pikachu ó 25"
+          autocomplete="off"
+        >
+        <button type="button" id="btn-buscar">Buscar</button>
+      </div>
+
+      <div id="resultado">
+        <p class="estado">Escribe un nombre o número de Pokémon para comenzar.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const input = document.getElementById('input-pokemon');
+  const boton = document.getElementById('btn-buscar');
+  const resultado = document.getElementById('resultado');
+
+  const API_URL = 'https://pokeapi.co/api/v2/pokemon/';
+
+  boton.addEventListener('click', buscarPokemon);
+
+  input.addEventListener('keydown', function (evento) {
+    if (evento.key === 'Enter') {
+      buscarPokemon();
+    }
+  });
+
+  async function buscarPokemon() {
+    const termino = input.value.trim().toLowerCase();
+
+    if (!termino) {
+      pintarEstado('Escribe un nombre o número antes de buscar.', true);
+      return;
+    }
+
+    pintarEstado('Buscando...');
+    boton.disabled = true;
+
+    try {
+      const respuesta = await fetch(API_URL + termino);
+
+      if (!respuesta.ok) {
+        throw new Error('No se encontró ningún Pokémon con ese nombre o ID.');
+      }
+
+      const datos = await respuesta.json();
+      pintarTarjeta(datos);
+
+    } catch (error) {
+      pintarEstado(error.message, true);
+    } finally {
+      boton.disabled = false;
+    }
+  }
+
+  function pintarEstado(mensaje, esError = false) {
+    resultado.innerHTML = `<p class="estado ${esError ? 'error' : ''}">${mensaje}</p>`;
+  }
+
+  function pintarTarjeta(pokemon) {
+    // Extraemos justo lo que pide la subtarea: nombre, id, peso e imagen frontal
+    const nombre = pokemon.name;
+    const id = pokemon.id;
+    const peso = pokemon.weight;               // el peso viene en hectogramos
+    const imagen = pokemon.sprites.front_default;
+    const tipos = pokemon.types.map(t => t.type.name);
+    const altura = pokemon.height;
+
+    resultado.innerHTML = `
+      <div class="tarjeta">
+        <img src="${imagen ?? ''}" alt="Sprite de ${nombre}">
+        <h2>${nombre}</h2>
+        <div class="numero">N.º ${String(id).padStart(3, '0')}</div>
+
+        <div class="tipos">
+          ${tipos.map(t => `<span class="tipo">${t}</span>`).join('')}
+        </div>
+
+        <div class="datos">
+          <div class="dato"><strong>${peso / 10} kg</strong>Peso</div>
+          <div class="dato"><strong>${altura / 10} m</strong>Altura</div>
+        </div>
+      </div>
+    `;
+  }
+</script>
+
+</body>
+</html>
